@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet raster boundary plugin example (using drawing plugin)</title>
+
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.css" />
+
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/0.2.3/leaflet.draw.js"></script>
+	
+	<script src="bundle.js"></script>
+
+    <style>
+        html, body, #map {
+            height: 100%;
+            margin: 0px;
+        }
+    </style>
+</head>
+
+<body>
+	<div id="map"></div>
+
+	<script type="text/javascript">
+
+	var map = L.map('map').setView([50, 50], 3);
+        
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; 2012 OpenStreetMap contributors'
+    }).addTo(map);
+
+	var drawControl = new L.Control.Draw({
+		draw: {
+            position: 'topright',
+            circle: null
+        },
+        edit: false
+	});
+    
+	map.addControl(drawControl);
+	map.on('draw:created', function (e) {
+        var geoJSON = e.layer.toGeoJSON();
+        e.layer.addTo(map);
+        L.geoJson(buffer(geoJSON, 200, 'miles'), {color: 'green', fillOpacity: 0.2, opacity: 1}).addTo(map);
+	});
+	</script>
+</body>
+</html>
